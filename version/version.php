@@ -22,9 +22,6 @@
         <a href="/brief1_php/version/version.php">version</a>
     </div>
     <div class="content">
-        <div id="search">
-            <input id="i_s" type="search">
-        </div>
         <div class="container my-5">
         <h1 id="titre" >LES VERTIONS</h1>
         <p id="list">----------list of VERSION----------</p>

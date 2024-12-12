@@ -22,13 +22,17 @@
     </div>
 
     <div class="content">
-        <div id="search">
-            <input id="i_s" type="search">
-        </div>
+        <form action="" method="GET" class="d-flex">
+            <div class="input-group me-2">
+                <input type="text" name="search" required value="<?php if (isset($_GET['search'])) { echo htmlspecialchars($_GET['search']); } ?>" class="form-control" placeholder="Search">
+            </div>
+            <button type="submit" class="btn btn-primary me-2">Search</button>
+            <a href="?reset=1" class="btn btn-secondary">Reset</a>
+        </form>
         <div class="container my-5">
-        <h1 id="titre">welcome to packages</h1>
-        <p id="list">----------list of package----------</p>
-        <br>
+            <h1 id="titre">Welcome to Packages</h1>
+            <p id="list">---------- List of Packages ----------</p>
+            <br>
             <div id="main">
                 <?php
                 $servername = "localhost";
@@ -36,43 +40,80 @@
                 $password = "";
                 $database = "my_brief1";
 
-                $connection = new mysqli($servername,$username,$password,$database);
+                $connection = new mysqli($servername, $username, $password, $database);
 
-                if($connection ->connect_error){
-                    die("connection failed:".$connection->connect_error);
-                }
-                
-
-
-                $sql ="SELECT package.nom as nomp,package.description,package.categorie ,auteur.nom ,version.numero_version FROM auteur_package
-
-                  INNER JOIN package on auteur_package.package_id =package.id 
-                  INNER JOIN auteur on auteur_package.auteur_id = auteur.id
-                  INNER JOIN version on version.package_id =package.id; ";
-                $result = $connection->query($sql);
-                if(!$result){
-                    die("invalid query:".$connection->error);
+                if ($connection->connect_error) {
+                    die("Connection failed: " . $connection->connect_error);
                 }
 
-                while($row = $result->fetch_assoc()){
-                    echo "
-                    <div id='carte'>
-                    <h1>$row[nomp]</h1>
-                    <h2>Auteur :</h2>
-                    <p>$row[nom]</p>
-                    <h2>Vertion :</h2>
-                    <p>$row[numero_version]</p>
-                    <h2>description :</h2>
-                    <p>$row[description]</p>
-                    <h2>categorie :</h2>
-                    <p>$row[categorie]</p>
-                </div>
-
+                // إذا كاين إعادة تعيين أو البحث فارغ
+                if (isset($_GET['reset']) || empty($_GET['search'])) {
+                    $sql = "
+                        SELECT 
+                            package.nom AS nomp, 
+                            package.description, 
+                            package.categorie, 
+                            auteur.nom, 
+                            version.numero_version 
+                        FROM 
+                            auteur_package
+                        INNER JOIN 
+                            package ON auteur_package.package_id = package.id 
+                        INNER JOIN 
+                            auteur ON auteur_package.auteur_id = auteur.id
+                        INNER JOIN 
+                            version ON version.package_id = package.id
+                    ";
+                } else {
+                    // إذا كاين بحث
+                    $filtervalues = $connection->real_escape_string($_GET['search']);
+                    $sql = "
+                        SELECT 
+                            package.nom AS nomp, 
+                            package.description, 
+                            package.categorie, 
+                            auteur.nom, 
+                            version.numero_version 
+                        FROM 
+                            auteur_package
+                        INNER JOIN 
+                            package ON auteur_package.package_id = package.id 
+                        INNER JOIN 
+                            auteur ON auteur_package.auteur_id = auteur.id
+                        INNER JOIN 
+                            version ON version.package_id = package.id
+                        WHERE 
+                            package.nom LIKE '%$filtervalues%' 
+                            OR auteur.nom LIKE '%$filtervalues%' 
+                            OR package.categorie LIKE '%$filtervalues%'
                     ";
                 }
+
+                $result = $connection->query($sql);
+
+                if ($result && $result->num_rows > 0) {
+                    while ($row = $result->fetch_assoc()) {
+                        echo "
+                        <div id='carte'>
+                            <h1>" . htmlspecialchars($row['nomp']) . "</h1>
+                            <h2>Auteur:</h2>
+                            <p>" . htmlspecialchars($row['nom']) . "</p>
+                            <h2>Version:</h2>
+                            <p>" . htmlspecialchars($row['numero_version']) . "</p>
+                            <h2>Description:</h2>
+                            <p>" . htmlspecialchars($row['description']) . "</p>
+                            <h2>Catégorie:</h2>
+                            <p>" . htmlspecialchars($row['categorie']) . "</p>
+                        </div>
+                        ";
+                    }
+                } else {
+                    echo "<p>No results found.</p>";
+                }
                 ?>
+            </div>
         </div>
     </div>
-    
+
 </body>
 </html>
