@@ -1,0 +1,76 @@
+
+#main{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+#search{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 10px;
+}
+#i_s{
+    width: 30%;
+}
+
+#titre{
+    font-size:70px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#carte {
+    background-color: black;
+    color: aliceblue;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    padding: 20px;
+    text-align: center;
+    width: 30%; 
+    height: 250px;
+    overflow: hidden;
+    transition: height 0.5s ease, padding 0.5s ease;
+}
+
+#carte p {
+    font-size: 15px;
+    margin-bottom: 8px;
+    display: none; 
+    transition: display 0.5s ease-in-out;
+}
+#carte h1 {
+    font-size: 30px;
+    margin-bottom: 15px;
+    color: rgb(12, 12, 221);
+}
+#carte h2 {
+    font-size: 20px;
+    margin-bottom: 5px;
+    color: blanchedalmond;
+}
+
+#carte:hover {
+    height: 450px;
+    padding: 40px;
+}
+
+#carte:hover p {
+    display: block; 
+}
+#list{
+    font-size: x-large;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+
+
+
